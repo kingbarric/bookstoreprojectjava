@@ -12,12 +12,18 @@ import org.springframework.util.StringUtils;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 @Service
 public class BookService {
     @Autowired
     private BookRepository bookRepository;
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
     // create a method that saves the book
 
@@ -97,5 +103,30 @@ public class BookService {
 
     public List<Books> findAll(){
         return this.bookRepository.findAll();
+    }
+
+    public Books findByISBN(String isbn){
+        try{
+          return   this.bookRepository.findByIsbn(isbn);
+        }catch (Exception e){
+            System.out.println();
+            return null;
+        }
+    }
+
+
+    public List<Books> searchBooks(@RequestBody Books search) {
+        System.out.println(search);
+        String sql= "SELECT * FROM books where ";
+
+        sql +=" category ='"+search.getCategory()+"' ";
+
+        sql +=" OR publisher ='"+search.getPublisher()+"' ";
+        if(!StringUtils.isEmpty(search.getLowPrice()) && !StringUtils.isEmpty(search.getHighPrice()) ){
+            sql +=" OR   price BETWEEN  "+search.getLowPrice()+"  AND "+search.getHighPrice()+" ";
+        }
+        System.out.println(sql);
+        RowMapper<Books> rowMapper = new BeanPropertyRowMapper<>(Books.class);
+        return jdbcTemplate.query(sql, rowMapper);
     }
 }

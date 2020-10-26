@@ -1,7 +1,9 @@
 package com.bookstore.project.bookstoreproject.entities;
 
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Transient;
 import java.math.BigDecimal;
 
 @Entity
@@ -19,6 +21,10 @@ public class Books {
     private String category;
     private String publisher;
     private String quantity;
+    @Transient
+    private BigDecimal lowPrice;
+    @Transient
+    private BigDecimal highPrice;
 
 
     public String getIsbn() {
@@ -99,5 +105,21 @@ public class Books {
 
     public void setQuantity(String quantity) {
         this.quantity = quantity;
+    }
+
+    public BigDecimal getLowPrice() {
+        return lowPrice;
+    }
+
+    public void setLowPrice(BigDecimal lowPrice) {
+        this.lowPrice = lowPrice;
+    }
+
+    public BigDecimal getHighPrice() {
+        return highPrice;
+    }
+
+    public void setHighPrice(BigDecimal highPrice) {
+        this.highPrice = highPrice;
     }
 }

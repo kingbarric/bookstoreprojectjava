@@ -1,7 +1,7 @@
 package com.bookstore.project.bookstoreproject.services.services;
 
 import com.bookstore.project.bookstoreproject.entities.Books;
-import com.bookstore.project.bookstoreproject.entities.Messages;
+import com.bookstore.project.bookstoreproject.entities.Message;
 import com.bookstore.project.bookstoreproject.services.repository.BookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -12,10 +12,12 @@ import org.springframework.util.StringUtils;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @Service
@@ -28,76 +30,76 @@ public class BookService {
     // create a method that saves the book
 
     public ResponseEntity saveBook(Books book){
-        Messages messages = new Messages();
+        Message message = new Message();
         if(book.getIsbn().isEmpty()){
-            messages.setCode(1);
-            messages.setMessagae("ISBN can not be empty");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(messages);
+            message.setCode(1);
+            message.setMessage("ISBN can not be empty");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
         }
         if(book.getTitle().isEmpty()){
-            messages.setCode(1);
-            messages.setMessagae("Book Title can not be empty");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(messages);
+            message.setCode(1);
+            message.setMessage("Book Title can not be empty");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
         }
         if( book.getCategory().isEmpty()){
-            messages.setCode(1);
-            messages.setMessagae("Book Category can not be empty");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(messages);
+            message.setCode(1);
+            message.setMessage("Book Category can not be empty");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
         }
         if(book.getPublisher().isEmpty()){
-            messages.setCode(1);
-            messages.setMessagae("Publisher can not be empty");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(messages);
+            message.setCode(1);
+            message.setMessage("Publisher can not be empty");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
         }
         if(StringUtils.isEmpty(book.getQuantity()+"")){
-            messages.setCode(1);
-            messages.setMessagae("Book Quantity can not be empty");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(messages);
+            message.setCode(1);
+            message.setMessage("Book Quantity can not be empty");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
         }
 
         bookRepository.save(book);
-        messages.setCode(0);
-        messages.setMessagae("Book created successfully");
-        return ResponseEntity.status(HttpStatus.CREATED).body(messages);
+        message.setCode(0);
+        message.setMessage("Book created successfully");
+        return ResponseEntity.status(HttpStatus.CREATED).body(message);
     }
 
     public ResponseEntity updateBook(Books book){
-        Messages messages = new Messages();
+        Message message = new Message();
         if(book.getIsbn().isEmpty()){
-            messages.setCode(1);
-            messages.setMessagae("ISBN can not be empty");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(messages);
+            message.setCode(1);
+            message.setMessage("ISBN can not be empty");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
         }
         if(book.getTitle().isEmpty()){
-            messages.setCode(1);
-            messages.setMessagae("Book Title can not be empty");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(messages);
+            message.setCode(1);
+            message.setMessage("Book Title can not be empty");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
         }
         if( book.getCategory().isEmpty()){
-            messages.setCode(1);
-            messages.setMessagae("Book Category can not be empty");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(messages);
+            message.setCode(1);
+            message.setMessage("Book Category can not be empty");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
         }
         if(book.getPublisher().isEmpty()){
-            messages.setCode(1);
-            messages.setMessagae("Publisher can not be empty");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(messages);
+            message.setCode(1);
+            message.setMessage("Publisher can not be empty");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
         }
         if(StringUtils.isEmpty(book.getQuantity()+"")){
-            messages.setCode(1);
-            messages.setMessagae("Book Quantity can not be empty");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(messages);
+            message.setCode(1);
+            message.setMessage("Book Quantity can not be empty");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
         }
         Books updatedBook = bookRepository.findByIsbn(book.getIsbn());
         if(updatedBook ==null){
-            messages.setCode(-3);
-            messages.setMessagae("No such book to edit");
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(messages);
+            message.setCode(-3);
+            message.setMessage("No such book to edit");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(message);
         }
         bookRepository.save(updatedBook);
-        messages.setCode(0);
-        messages.setMessagae("Book created successfully");
-        return ResponseEntity.status(HttpStatus.CREATED).body(messages);
+        message.setCode(0);
+        message.setMessage("Book Updated successfully");
+        return ResponseEntity.status(HttpStatus.CREATED).body(message);
     }
 
 
@@ -128,5 +130,15 @@ public class BookService {
         System.out.println(sql);
         RowMapper<Books> rowMapper = new BeanPropertyRowMapper<>(Books.class);
         return jdbcTemplate.query(sql, rowMapper);
+    }
+
+
+    public ResponseEntity delete(@PathVariable String id) {
+        Books b = bookRepository.findByIsbn(id);
+        bookRepository.delete(b);
+        Map m = new HashMap();
+        m.put("code",0);
+        m.put("message","The Book was successfully deleted");
+        return ResponseEntity.status(HttpStatus.OK).body(m);
     }
 }

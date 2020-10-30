@@ -1,8 +1,8 @@
 package com.bookstore.project.bookstoreproject.entities;
 
-public class Messages {
+public class Message {
     private int code;
-    private String messagae;
+    private String message;
 
 
     public int getCode() {
@@ -13,11 +13,11 @@ public class Messages {
         this.code = code;
     }
 
-    public String getMessagae() {
-        return messagae;
+    public String getMessage() {
+        return message;
     }
 
-    public void setMessagae(String messagae) {
-        this.messagae = messagae;
+    public void setMessage(String message) {
+        this.message = message;
     }
 }

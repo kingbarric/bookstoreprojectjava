@@ -1,21 +1,21 @@
 package com.bookstore.project.bookstoreproject.entities;
 
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Transient;
+import javax.persistence.*;
 import java.math.BigDecimal;
 
 @Entity
 public class Books {
 
     @Id
+    @Basic(optional = false)
     private String isbn;
     private String author;
     private String name;
     private String description;
     //400.00
     private BigDecimal price;
+    @Lob
     private String image;
     private String title;
     private String category;

@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.util.HashMap;
@@ -29,6 +30,7 @@ public class BookService {
 
     // create a method that saves the book
 
+    @Transactional
     public ResponseEntity saveBook(Books book){
         Message message = new Message();
         if(book.getIsbn().isEmpty()){
@@ -63,6 +65,7 @@ public class BookService {
         return ResponseEntity.status(HttpStatus.CREATED).body(message);
     }
 
+    @Transactional
     public ResponseEntity updateBook(Books book){
         Message message = new Message();
         if(book.getIsbn().isEmpty()){
@@ -107,6 +110,7 @@ public class BookService {
         return this.bookRepository.findAll();
     }
 
+    @Transactional
     public Books findByISBN(String isbn){
         try{
           return   this.bookRepository.findByIsbn(isbn);
@@ -133,6 +137,7 @@ public class BookService {
     }
 
 
+    @Transactional
     public ResponseEntity delete(@PathVariable String id) {
         Books b = bookRepository.findByIsbn(id);
         bookRepository.delete(b);
